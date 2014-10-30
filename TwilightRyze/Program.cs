@@ -84,6 +84,7 @@ namespace LightningRyze
             Config.AddSubMenu(new Menu("Exploit", "Exploit"));
             Config.SubMenu("Exploit").AddItem(new MenuItem("UsePacket", "Use Packet Cast").SetValue(true));
             Config.SubMenu("Exploit").AddItem(new MenuItem("tearStack", "Q+W duoble tear effect (BETA)").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Press)));
+            Config.SubMenu("Exploit").AddItem(new MenuItem("stackDelay", "Exploit Delay").SetValue(new Slider(0, 150,25)));
 
             Config.AddSubMenu(new Menu("JungleFarm", "JungleFarm"));
             Config.SubMenu("JungleFarm").AddItem(new MenuItem("JungActive", "Farm!").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
@@ -214,6 +215,7 @@ namespace LightningRyze
         private static void TearExploit()
         {
             var UsePacket = Config.Item("UsePacket").GetValue<bool>();
+            var delayExploit = Config.Item("stackDelay").GetValue<Slider>().Value;
             var allMinions = MinionManager.GetMinions(myHero.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.Health);
             if (Q.IsReady() && W.IsReady())
             {
@@ -222,7 +224,7 @@ namespace LightningRyze
                     if (120 >= minion.Health)
                     {
                         Q.CastOnUnit(minion, UsePacket);
-                        Utility.DelayAction.Add(25, () => W.CastOnUnit(minion, UsePacket));
+                        Utility.DelayAction.Add(delayExploit, () => W.CastOnUnit(minion, UsePacket));
                         //Thread.Sleep(25);
                         //W.CastOnUnit(minion, UsePacket);
                     }
